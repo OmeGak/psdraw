@@ -33,9 +33,11 @@ address attached.  No guarantees are offered, although if there
 are bugs let me know and I might fix them.
 
  *******************************************************************/
+#include <getopt.h>
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #define PI 3.14159265358979323846264338328
 #define EE 2.71828182845904523536
 /* unlikely the user will choose this: */
