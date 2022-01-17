@@ -27,9 +27,77 @@ zcat datafile.Z | ./psdraw > output.ps
 ./psdraw datafile > output.ps
 ```
 
-## Example
+## Examples
+
+### Spiral triangles
+
+![](/out/spi0.png)
 
 ```shell
-cat data | psdraw -Z 255 0 128 -X - - -20 20 -S 15 6 -l 0.1 -A -x 10 -y 5
-   -a "time" -b "X variable" -T "Lorenz attractor" > vlorenz.ps
+awk '\
+BEGIN { ee = 0.08;
+        x1=0;  y1=0;
+        x2=10;  y2=0;
+        x3=5;  y3=5*sqrt(3);
+        print x1,y1,x2,y2,x3,y3,x1,y1;
+
+        for (t=0;t<100;t++)  {
+             x4 = ee*x2 + (1-ee)*x3;
+             y4 = ee*y2 + (1-ee)*y3;
+             print x4,y4;
+             x3=x2;  y3=y2;
+             x2=x1;  y2=y1;
+             x1=x4;  y1=y4;
+        }
+      }
+' | ./psdraw -l 0.1 -X - - - 10 > spi0.ps
 ```
+
+![](out/spi3.png)
+
+```shell
+awk '\
+BEGIN { ee = 0.02;
+        x1=0;  y1=0;
+        x2=10;  y2=0;
+        x3=5;  y3=5*sqrt(3);
+        print x1,y1,0,0,0;             # black outline
+        print x2,y2,0,0,0;
+        print x3,y3,0,0,0;
+        print x1,y1,0,0,0;
+
+        for (t=0;t<100;t++)  {
+             x4 = ee*x2 + (1-ee)*x3;
+             y4 = ee*y2 + (1-ee)*y3;
+             print x4,y4,sin(t/4),0,cos(t/4);
+             x3=x2;  y3=y2;
+             x2=x1;  y2=y1;
+             x1=x4;  y1=y4
+        }
+      }
+' | ./psdraw -l 0.1 -X - - - 10 -C > spi3.ps
+```
+
+From http://www.physics.emory.edu/faculty/weeks//ideas/spiral.html.
+
+### More spirals
+
+![](out/sparch.png)
+
+```shell
+seq 0 0.002 1 | awk '{t=5*$1*2*3.14159;r=t;x=r*cos(t);y=r*sin(t);print x ,y}' | ./psdraw -S 10 10 -X -30 32 -30 32 -l 0.1 > sparch.ps
+```
+
+![](out/splog.png)
+
+```shell
+seq 0 0.002 1.5 | awk ' {a=1.0;b=0.1;t=5*$1*2*3.14159;r=a*exp(b*t);x=r*cos(t);y=r*sin(t);print x,y} ' | ./psdraw -X -111 96 -111 96 -S 10 10 -l 0.1 > splog.ps
+```
+
+![](out/spfermat.png)
+
+```shell
+seq 0 0.002 1.5 | awk ' {a=1.0;b=0.1;t=5*$1*2*3.14159;r=sqrt(t)*15;x=r*cos(t);y=r*sin(t);print x,y} ' | ./psdraw -X -111 96 -111 96 -S 10 10 -l 0.1 > spfermat.ps
+```
+
+From http://www.physics.emory.edu/faculty/weeks//ideas/spiral2.html.
